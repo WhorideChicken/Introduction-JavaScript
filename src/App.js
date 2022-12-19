@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Hello from './Hello';
 import MyHello from './SetProbsName';
 import Wrapper from './Wrapper';
 import Counter from './Counter';
+import InputSample from './InputSample';
+import InputServal from './InputServeral';
+import UserList from './UserList';
+import CreateUser from './CreateUser';
 import './App.css'
 
 //컴포넌트는 일정의 UI 조각입니다. 쉽게 재사용도 가능합니다.
@@ -15,8 +19,62 @@ function App() {
     fontSize : 24,
     padding: '1rem'// 다른 단위 사용 시 문자열로 설정
   }
+  const [users, setUsers] = useState([
+    {
+      id: 1,
+      username: 'velopert',
+      email: 'public.velopert@gmail.com'
+    },
+    {
+      id: 2,
+      username: 'tester',
+      email: 'tester@example.com'
+    },
+    {
+      id: 3,
+      username: 'liz',
+      email: 'liz@example.com'
+    }
+  ]);
 
+  //props 준비
+  const [inputs, setInputs] = useState({
+    username: '',
+    email: ''
+  });
+  
+  const {username, email } = inputs;
+  const onChange = e => {
+    const { name, value } = e.target;
+    setInputs({
+      ...inputs,
+      [name]: value
+    });
+  };
+
+  //4라는 파라미터가 .currnt가 된다
+  const nextId = useRef(4);
+  const onCreate = () => {
+    const user ={
+      id: nextId.current,
+      username,
+      email
+    }
+    
+    //spread사용법
+    //setUsers([...users,user]);
+    
+    //concat 사용법 : 기존의 배열을 수정하지 않고 새로운 원소가 추가 된 새로운 배열을 생성
+    setUsers(users.concat(user));
+    setInputs({
+      username: '',
+      email: ''
+    });
+    nextId.current += 1;
+  };
+    
   return (
+    
     <>
       <Hello />
       <Hello />
@@ -48,6 +106,17 @@ function App() {
 
       <Counter />
 
+      <InputSample />
+
+      <InputServal />
+
+      <CreateUser 
+        username={username}
+        email={email}
+        onChange={onChange}
+        onCreate={onCreate}
+        />
+      <UserList users={users}/>
     </>
   );
 }
